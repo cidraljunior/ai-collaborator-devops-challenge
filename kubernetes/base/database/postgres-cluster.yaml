@@ -1,0 +1,17 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: customer-order-db
+spec:
+  teamId: "customer-team"
+  volume:
+    size: 1Gi
+  numberOfInstances: 2
+  users:
+    app-user:
+      - superuser
+      - createdb
+  databases:
+    customerdb: app-user
+  postgresql:
+    version: "16"

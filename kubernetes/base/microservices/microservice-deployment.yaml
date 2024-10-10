@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-microservice
+  template:
+    metadata:
+      labels:
+        app: app-microservice
+    spec:
+      containers:
+        - name: app-microservice
+          image: app-microservice:1.0
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              value: customer-order-db
+            - name: DB_NAME
+              value: customerdb
+            - name: DB_USER
+              value: app-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-user.customer-order-db.credentials.postgresql.acid.zalan.do
+                  key: password
+            - name: DB_PORT
+              value: "5432"

@@ -1,0 +1,12 @@
+resources:
+  - microservices/microservice-deployment.yaml
+  - microservices/microservice-service.yaml
+  - microservices/photo-microservice-deployment.yaml
+  - microservices/photo-microservice-service.yaml
+  - database/postgres-cluster.yaml
+  - ingress/ingress.yaml
+  - frontend/deployment.yaml
+  - frontend/service.yaml
+  - frontend/configmap.yaml
+  - storage/minio.yaml
+  - storage/minio-config.yaml

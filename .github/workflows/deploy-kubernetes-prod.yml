@@ -1,0 +1,60 @@
+name: CI/CD Pipeline to EKS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAM_PROD }}
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Docker Images
+        run: |
+          # Define variables
+          APP_MICROSERVICE_REPO=123456789.dkr.ecr.us-east-1.amazonaws.com/app-microservice
+          PHOTO_MICROSERVICE_REPO=123456789.dkr.ecr.us-east-1.amazonaws.com/photo-microservice
+          
+          # Build app-microservice
+          docker build -t app-microservice:latest ./microservices/app-microservice/
+          docker tag app-microservice:latest $APP_MICROSERVICE_REPO:latest
+          docker push $APP_MICROSERVICE_REPO:latest
+          
+          # Build photo-microservice
+          docker build -t photo-microservice:latest ./microservices/photo-microservice/
+          docker tag photo-microservice:latest $PHOTO_MICROSERVICE_REPO:latest
+          docker push $PHOTO_MICROSERVICE_REPO:latest
+
+      - name: Helm Upgrade and Install
+        run: |
+          ./scripts/install-operators.sh
+
+      - name: Apply Kustomize
+        run: |
+          kubectl apply -k kubernetes/overlays/prod
+
+

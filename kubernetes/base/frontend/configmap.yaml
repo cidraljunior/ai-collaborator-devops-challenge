@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+data: 
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to My Frontend Microservice</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                background-color: #f8f9fa;
+                padding-top: 50px;
+            }
+            .container {
+                text-align: center;
+            }
+            .jumbotron {
+                background-color: #007bff;
+                color: white;
+                padding: 2rem;
+                transition: background-color 0.3s ease;
+            }
+            .jumbotron:hover {
+                background-color: #0056b3;
+            }
+            .lead {
+                transition: transform 0.3s ease;
+            }
+            .lead:hover {
+                transform: scale(1.1);
+            }
+            .btn-custom {
+                background-color: #28a745;
+                color: white;
+                transition: background-color 0.3s ease;
+            }
+            .btn-custom:hover {
+                background-color: #218838;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="jumbotron" id="jumbotron">
+                <h1 class="display-4">Hello, World!</h1>
+                <p class="lead">This is a simple frontend microservice running in Kubernetes.</p>
+                <button class="btn btn-custom mt-3" onclick="changeContent()">Click Me!</button>
+            </div>
+            <p id="extraMessage" class="mt-4"></p>
+        </div>
+
+        <!-- Bootstrap JS and dependencies (optional) -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.0/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            function changeContent() {
+                const message = document.getElementById("extraMessage");
+                message.textContent = "You clicked the button! Enjoy your time exploring!";
+                message.classList.add("text-success");
+            }
+        </script>
+    </body>
+    </html>
+

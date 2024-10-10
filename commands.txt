@@ -1,0 +1,22 @@
+
+# Install Kind
+brew install kind
+
+kind create cluster --config kind-config.yaml
+
+
+PGPASSWORD=$(kubectl get secret -n dev app-user.customer-order-db.credentials.postgresql.acid.zalan.do -o jsonpath='{.data.password}' | base64 --decode)
+kubectl run -n dev -it --rm --image=postgres:16 --env="PGPASSWORD=$PGPASSWORD" psql-client -- \
+    psql -h customer-order-db.dev.svc.cluster.local -U app_user -d customerdb
+
+
+kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80 
+
+
+docker build -t local/app-microservice:latest .
+╰─$ docker build -t photo-microservice:1.0 .
+
+kind create cluster --config scripts/kind/kind-config.yaml
+
+
+kind load docker-image photo-microservice:1.0 --name kind   

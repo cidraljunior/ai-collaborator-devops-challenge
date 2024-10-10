@@ -1,0 +1,6 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: customer-order-db
+spec:
+  numberOfInstances: 1

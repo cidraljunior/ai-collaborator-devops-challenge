@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photo-microservice
+  labels:
+    app: photo-microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: photo-microservice
+  template:
+    metadata:
+      labels:
+        app: photo-microservice
+    spec:
+      containers:
+        - name: photo-microservice
+          image: photo-microservice:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              value: customer-order-db
+            - name: DB_NAME
+              value: customerdb
+            - name: DB_USER
+              value: app_user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-user.customer-order-db.credentials.postgresql.acid.zalan.do
+                  key: password
+            - name: DB_PORT
+              value: "5432"
+          resources:
+            requests:
+              cpu: "1"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+      nodeSelector:
+        gpu: "true"
